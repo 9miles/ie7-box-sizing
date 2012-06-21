@@ -26,4 +26,4 @@ Note, this script requires jQuery is present on the page.
 
 ## Links
 
-	- http://paulirish.com/2012/box-sizing-border-box-ftw/
+- http://paulirish.com/2012/box-sizing-border-box-ftw/
