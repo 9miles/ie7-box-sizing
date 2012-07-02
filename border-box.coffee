@@ -2,11 +2,10 @@ $(document).ready ->
 
 	$('*').each ->
 
+		# Cache This
+		_this = $(this)
+
 		if _this.css('box-sizing') == "border-box"
-
-			# Cache This
-
-			_this = $(this)
 
 
 			# Variables
