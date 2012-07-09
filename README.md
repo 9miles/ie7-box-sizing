@@ -7,6 +7,11 @@ I recommend using conditional comments to target IE less than version 7.
 ````
 <!--[if lte IE 8 ]>
 	<script type="text/javascript" src="/javascript/border-box.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			borderBox(1000);
+		});
+	</script>
 <![endif]-->
 ````
 
