@@ -11,15 +11,13 @@
 #	- Add support for height
 #
 
-
-
 $(document).ready ->
 
 	# Fix for getComputedStyle
 	if !window.getComputedStyle
 		window.getComputedStyle = (el, pseudo) ->
-			this.el = el
-			this.getPropertyValue = (prop) ->
+			@.el = el
+			@.getPropertyValue = (prop) ->
 				re = /(\-([a-z]){1})/g
 				if prop == 'float' then prop = 'styleFloat'
 				if re.test(prop)
@@ -27,10 +25,10 @@ $(document).ready ->
 							return arguments[2].toUpperCase()
 						)
 				if el.currentStyle[prop] then el.currentStyle[prop] else null
-			return this
+			return @
 
 	String.prototype.endsWith = (suffix) ->
-		return this.indexOf(suffix, this.length - suffix.length) != -1
+		return @.indexOf(suffix, @.length - suffix.length) != -1
 
 
 	$('*').each ->
