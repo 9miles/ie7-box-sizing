@@ -1,15 +1,63 @@
-borderBox = (maxWidth) ->
+###
+	Warning: Only run this in less than or equal to IE 7 conditional comments
+###
+
+
+# 	TODO
+#
+#	- Detect the actual parent width
+#	- Detect if the padding is percentage of pixel based
+#	- Work out a percentage based padding from a pixel based padding based on the parent
+#	- Add support for height
+#
+
+
+
+$(document).ready ->
+
+	# Fix for getComputedStyle
+	if !window.getComputedStyle
+		window.getComputedStyle = (el, pseudo) ->
+			this.el = el
+			this.getPropertyValue = (prop) ->
+				re = /(\-([a-z]){1})/g
+				if prop == 'float' then prop = 'styleFloat'
+				if re.test(prop)
+					prop = prop.replace(re, ->
+							return arguments[2].toUpperCase()
+						)
+				if el.currentStyle[prop] then el.currentStyle[prop] else null
+			return this
+
+	String.prototype.endsWith = (suffix) ->
+		return this.indexOf(suffix, this.length - suffix.length) != -1
+
+
 	$('*').each ->
 
 		# Cache This
 		_this = $(this)
 
-		width = parseInt(_this.css('width'), 10)
+		# Grab all the styles
+		style = window.getComputedStyle(@)
 
-		if _this.css('box-sizing') == "border-box" and width < maxWidth
+		# Find the width
+		width = style.getPropertyValue('width')
 
-			paddingLeft = parseInt(_this.css('padding-left'), 10)
-			paddingRight = parseInt(_this.css('padding-right'), 10)
+		# Check if it's a percentage based width
+		if width.endsWith('px')
+			width = 0 # set to 0 so it fails
+		else
+			width = parseInt(width, 10)
+
+		# Set the width and check it's a number
+		width = if isNaN(width) then 0 else width
+
+		if _this.css('box-sizing') == "border-box" and width != 'auto' and width > 0
+
+			# Gather Values
+			paddingLeft = parseInt(style.getPropertyValue('padding-left'), 10)
+			paddingRight = parseInt(style.getPropertyValue('padding-right'), 10)
 			borderLeft = parseInt(_this.css('border-left'), 10)
 			borderRight = parseInt(_this.css('border-right'), 10)
 
@@ -18,15 +66,12 @@ borderBox = (maxWidth) ->
 			paddingRight = if isNaN(paddingRight) then 0 else paddingRight
 			borderLeft = if isNaN(borderLeft) then 0 else borderLeft
 			borderRight = if isNaN(borderRight) then 0 else borderRight
-			width = if isNaN(width) then 0 else width
 
 			# Calculate New Width
-			result = width - paddingLeft - paddingRight - borderLeft - borderRight - 1 # fix for rounding
+			result = width - paddingLeft - paddingRight # - _pixel is a fix for rounding
 
 			# Set new values
 			_this.css({
 				'box-sizing' : 'content-box'
-				'width' : result
-				'padding-left' : paddingLeft
-				'padding-right' : paddingRight
+				'width' : result + '%'
 				})
